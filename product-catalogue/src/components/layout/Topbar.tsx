@@ -11,7 +11,7 @@ const pageTitles: Record<string, string> = {
 export default function Topbar() {
   const { pathname } = useLocation()
 
-  const title = pageTitles[pathname] ?? 'Brand Studio'
+  const title = pageTitles[pathname] ?? 'Product Catalogue'
 
   return (
     <header className="h-13 border-b border-border flex items-center px-6 gap-4 bg-base">

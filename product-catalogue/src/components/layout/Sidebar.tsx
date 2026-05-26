@@ -22,7 +22,7 @@ export default function Sidebar() {
     <aside className="w-56 min-w-56 h-screen bg-base border-r border-border flex flex-col py-5">
       <div className="px-4 pb-6 border-b border-border mb-4 flex items-center gap-2">
         <div className="w-7 h-7 bg-white rounded-md flex items-center justify-center">
-          <span className="text-base text-xs font-medium">B</span>
+          <span className="text-base text-xs font-medium">PC</span>
         </div>
         <span className="text-content-primary text-sm font-medium">Product Catalogue</span>
       </div>
