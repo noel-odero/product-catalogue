@@ -1,3 +1,6 @@
+import { RouterProvider } from 'react-router-dom'
+import { router } from './router'
+
 export default function App() {
-  return <div className="text-content-primary p-8">Brand Studio</div>
+  return <RouterProvider router={router} />
 }
