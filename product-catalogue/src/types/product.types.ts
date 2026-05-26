@@ -13,6 +13,7 @@ export interface Product {
   season: string
   status: ProductStatus
   readiness: ReadinessStatus
+  thumbnailUrl: string
   createdAt: string
   updatedAt: string
 }
