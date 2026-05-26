@@ -15,7 +15,7 @@ export interface Asset {
   status: AssetStatus
   rejectionReason?: string
   uploadedAt: string
-  statusHistory: AssetStatusEvent[]
+  statusHistory: AssetStatusEvent[] // track every status changed over time.
 }
 
 export interface AssetStatusEvent {
