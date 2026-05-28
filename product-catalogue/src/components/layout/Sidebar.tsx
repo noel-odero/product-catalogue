@@ -59,12 +59,6 @@ export default function Sidebar() {
         >
           + New product
         </button>
-        <div className="flex items-center gap-2 px-3 py-2 mt-2">
-          <div className="w-7 h-7 rounded-full bg-elevated border border-border flex items-center justify-center text-xs text-content-secondary">
-            NO
-          </div>
-          <span className="text-xs text-content-tertiary">Noel O.</span>
-        </div>
       </div>
     </aside>
   )
