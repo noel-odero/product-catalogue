@@ -8,6 +8,7 @@ import EditProductPage from '../features/products/pages/EditProductPage'
 import AssetLibraryPage from '../features/assets/pages/AssetLibraryPage'
 import AssetDetailPage from '../features/assets/pages/AssetDetailPage'
 import ReviewQueuePage from '../features/assets/pages/ReviewQueuePage'
+import NotFoundPage from '../features/NotFoundPage'
 
 export const router = createBrowserRouter([
   {
@@ -24,4 +25,8 @@ export const router = createBrowserRouter([
       { path: 'review', element: <ReviewQueuePage /> },
     ],
   },
+  {
+    path: "*",
+    element: <NotFoundPage/>,
+  }
 ])

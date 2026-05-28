@@ -18,15 +18,8 @@ export interface Product {
   updatedAt: string
 }
 
-export interface CreateProductDTO {
-  name: string
-  productCode: string
-  description: string
-  brand: string
-  category: string
-  targetMarket: string
-  season: string
-}
+export type CreateProductDTO = Omit<Product, 'id' | 'status' | 'readiness' | 'thumbnailUrl' | 'createdAt' | 'updatedAt'>
+
 
 export interface UpdateProductDTO extends Partial<CreateProductDTO> {
   status?: ProductStatus

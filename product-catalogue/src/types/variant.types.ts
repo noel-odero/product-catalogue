@@ -1,3 +1,4 @@
+// server
 export interface Variant {
   id: string
   productId: string
@@ -10,14 +11,8 @@ export interface Variant {
   createdAt: string
 }
 
-export interface CreateVariantDTO {
-  productId: string
-  name: string
-  variantCode: string
-  colour: string
-  size: string
-  material: string
-  barcode?: string
-}
+// user
+export type CreateVariantDTO = Omit<Variant, 'id' | 'createdAt'>
+
 
 export interface UpdateVariantDTO extends Partial<CreateVariantDTO> {}
