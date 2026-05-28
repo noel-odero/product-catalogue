@@ -1,91 +1,60 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { Product, CreateProductDTO, UpdateProductDTO } from '../types'
 import { productService } from '../services'
 
-interface UseProductsState {
-  products: Product[]
-  loading: boolean
-  error: string | null
-}
+const PRODUCTS_KEY = ['products'] as const
 
-interface UseProductsReturn extends UseProductsState {
-  refetch: () => Promise<void>
-  createProduct: (dto: CreateProductDTO) => Promise<Product>
-  updateProduct: (id: string, dto: UpdateProductDTO) => Promise<Product>
-  submitForReview: (id: string) => Promise<Product>
-  publish: (id: string) => Promise<Product>
-  archive: (id: string) => Promise<Product>
-}
+export function useProducts() {
+  const queryClient = useQueryClient()
 
-export const useProducts = (): UseProductsReturn => {
-  const [productState, setProductState] = useState<UseProductsState>({
-    products: [],
-    loading: false,
-    error: null,
+  const { data: products = [], isLoading: loading, error } = useQuery({
+    queryKey: PRODUCTS_KEY,
+    queryFn: () => productService.find(),
   })
 
-  const fetchProducts = useCallback(async (): Promise<void> => {
-    setProductState(prev => ({ ...prev, loading: true, error: null }))
-    try {
-      const products = await productService.find()
-      setProductState(prev => ({ ...prev, products, loading: false }))
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'Failed to fetch products'
-      setProductState(prev => ({ ...prev, error: message, loading: false }))
-    }
-  }, [])
+  const updateCache = (updated: Product) => {
+    queryClient.setQueryData<Product[]>(PRODUCTS_KEY, prev =>
+      prev ? prev.map(p => p.id === updated.id ? updated : p) : [updated]
+    )
+  }
 
-  useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
+  const { mutateAsync: createProduct } = useMutation({
+    mutationFn: (dto: CreateProductDTO) => productService.create(dto),
+    onSuccess: (newProduct) => {
+      queryClient.setQueryData<Product[]>(PRODUCTS_KEY, prev =>
+        prev ? [...prev, newProduct] : [newProduct]
+      )
+    },
+  })
 
-  const createProduct = useCallback(async (dto: CreateProductDTO): Promise<Product> => {
-    const newProduct = await productService.create(dto)
-    setProductState(prev => ({ ...prev, products: [...prev.products, newProduct] }))
-    return newProduct
-  }, [])
+  const { mutateAsync: updateProduct } = useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto: UpdateProductDTO }) =>
+      productService.update(id, dto),
+    onSuccess: updateCache,
+  })
 
-  const updateProduct = useCallback(async (id: string, dto: UpdateProductDTO): Promise<Product> => {
-    const updated = await productService.update(id, dto)
-    setProductState(prev => ({
-      ...prev,
-      products: prev.products.map(p => p.id === id ? updated : p),
-    }))
-    return updated
-  }, [])
+  const { mutateAsync: submitForReview } = useMutation({
+    mutationFn: (id: string) => productService.submitForReview(id),
+    onSuccess: updateCache,
+  })
 
-  const submitForReview = useCallback(async (id: string): Promise<Product> => {
-    const updated = await productService.submitForReview(id)
-    setProductState(prev => ({
-      ...prev,
-      products: prev.products.map(p => p.id === id ? updated : p),
-    }))
-    return updated
-  }, [])
+  const { mutateAsync: publish } = useMutation({
+    mutationFn: (id: string) => productService.publish(id),
+    onSuccess: updateCache,
+  })
 
-  const publish = useCallback(async (id: string): Promise<Product> => {
-    const updated = await productService.publish(id)
-    setProductState(prev => ({
-      ...prev,
-      products: prev.products.map(p => p.id === id ? updated : p),
-    }))
-    return updated
-  }, [])
-
-  const archive = useCallback(async (id: string): Promise<Product> => {
-    const updated = await productService.archive(id)
-    setProductState(prev => ({
-      ...prev,
-      products: prev.products.map(p => p.id === id ? updated : p),
-    }))
-    return updated
-  }, [])
+  const { mutateAsync: archive } = useMutation({
+    mutationFn: (id: string) => productService.archive(id),
+    onSuccess: updateCache,
+  })
 
   return {
-    ...productState,
-    refetch: fetchProducts,
+    products,
+    loading,
+    error: error instanceof Error ? error.message : null,
+    refetch: () => queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY }),
     createProduct,
-    updateProduct,
+    updateProduct: (id: string, dto: UpdateProductDTO) => updateProduct({ id, dto }),
     submitForReview,
     publish,
     archive,
