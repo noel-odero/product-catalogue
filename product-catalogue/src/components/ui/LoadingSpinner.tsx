@@ -5,9 +5,9 @@ interface LoadingSpinnerProps {
 
 export default function LoadingSpinner({ size = 'md', fullPage = false }: LoadingSpinnerProps) {
   const sizeClasses = {
-    sm: 'w-4 h-4 border-2',
-    md: 'w-6 h-6 border-2',
-    lg: 'w-10 h-10 border-4',
+    sm: 's-4 border-2',
+    md: 's-6 border-2',
+    lg: 's-10 border-4',
   }
 
   const spinner = (
