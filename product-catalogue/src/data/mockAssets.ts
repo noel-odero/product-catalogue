@@ -76,7 +76,7 @@ export const mockAssets: Asset[] = [
     description: 'Close up of collar and button detail',
     tags: ['detail', 'collar', 'studio'],
     fileName: 'ls-204-detail.jpg',
-    fileUrl: 'https://images.unsplash.com/photo-1563630423918-b58f07336ac5?w=800&q=80',
+    fileUrl: 'https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=800&q=80',
     status: 'REJECTED',
     rejectionReason: 'Image is out of focus. Please reshoot.',
     uploadedAt: '2024-08-21T09:30:00Z',

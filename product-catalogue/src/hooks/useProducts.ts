@@ -18,20 +18,20 @@ interface UseProductsReturn extends UseProductsState {
 }
 
 export const useProducts = (): UseProductsReturn => {
-  const [state, setState] = useState<UseProductsState>({
+  const [productState, setProductState] = useState<UseProductsState>({
     products: [],
     loading: false,
     error: null,
   })
 
   const fetchProducts = useCallback(async (): Promise<void> => {
-    setState(prev => ({ ...prev, loading: true, error: null }))
+    setProductState(prev => ({ ...prev, loading: true, error: null }))
     try {
       const products = await productService.find()
-      setState(prev => ({ ...prev, products, loading: false }))
+      setProductState(prev => ({ ...prev, products, loading: false }))
     } catch (e) {
       const message = e instanceof Error ? e.message : 'Failed to fetch products'
-      setState(prev => ({ ...prev, error: message, loading: false }))
+      setProductState(prev => ({ ...prev, error: message, loading: false }))
     }
   }, [])
 
@@ -41,13 +41,13 @@ export const useProducts = (): UseProductsReturn => {
 
   const createProduct = useCallback(async (dto: CreateProductDTO): Promise<Product> => {
     const newProduct = await productService.create(dto)
-    setState(prev => ({ ...prev, products: [...prev.products, newProduct] }))
+    setProductState(prev => ({ ...prev, products: [...prev.products, newProduct] }))
     return newProduct
   }, [])
 
   const updateProduct = useCallback(async (id: string, dto: UpdateProductDTO): Promise<Product> => {
     const updated = await productService.update(id, dto)
-    setState(prev => ({
+    setProductState(prev => ({
       ...prev,
       products: prev.products.map(p => p.id === id ? updated : p),
     }))
@@ -56,7 +56,7 @@ export const useProducts = (): UseProductsReturn => {
 
   const submitForReview = useCallback(async (id: string): Promise<Product> => {
     const updated = await productService.submitForReview(id)
-    setState(prev => ({
+    setProductState(prev => ({
       ...prev,
       products: prev.products.map(p => p.id === id ? updated : p),
     }))
@@ -65,7 +65,7 @@ export const useProducts = (): UseProductsReturn => {
 
   const publish = useCallback(async (id: string): Promise<Product> => {
     const updated = await productService.publish(id)
-    setState(prev => ({
+    setProductState(prev => ({
       ...prev,
       products: prev.products.map(p => p.id === id ? updated : p),
     }))
@@ -74,7 +74,7 @@ export const useProducts = (): UseProductsReturn => {
 
   const archive = useCallback(async (id: string): Promise<Product> => {
     const updated = await productService.archive(id)
-    setState(prev => ({
+    setProductState(prev => ({
       ...prev,
       products: prev.products.map(p => p.id === id ? updated : p),
     }))
@@ -82,7 +82,7 @@ export const useProducts = (): UseProductsReturn => {
   }, [])
 
   return {
-    ...state,
+    ...productState,
     refetch: fetchProducts,
     createProduct,
     updateProduct,
