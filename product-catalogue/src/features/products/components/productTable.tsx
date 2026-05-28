@@ -1,13 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 import type { Product } from '../../../types'
-import { formatDate, truncate } from '../../../lib/utils'
-import { cn } from '../../../lib/utils'
+import { cn, formatDate, truncate } from '../../../lib/utils'
 import StatusBadge from '../../../components/shared/StatusBadge'
-import { EmptyState } from '../../../components/ui'
+import EmptyState from '../../../components/ui/EmptyState'
 
 interface ProductTableProps {
   products: Product[]
 }
+
+const thClass = 'text-left text-xs text-muted font-normal px-4 py-3'
+const tdClass = 'px-4 py-3 text-xs text-content-secondary'
+
+const columns = ['Product', 'Code', 'Brand', 'Category', 'Status', 'Readiness', 'Updated', '']
 
 export default function ProductTable({ products }: ProductTableProps) {
   const navigate = useNavigate()
@@ -33,14 +37,9 @@ export default function ProductTable({ products }: ProductTableProps) {
       <table className="w-full">
         <thead>
           <tr className="border-b border-border">
-            <th className="text-left text-xs text-muted font-normal px-4 py-3">Product</th>
-            <th className="text-left text-xs text-muted font-normal px-4 py-3">Code</th>
-            <th className="text-left text-xs text-muted font-normal px-4 py-3">Brand</th>
-            <th className="text-left text-xs text-muted font-normal px-4 py-3">Category</th>
-            <th className="text-left text-xs text-muted font-normal px-4 py-3">Status</th>
-            <th className="text-left text-xs text-muted font-normal px-4 py-3">Readiness</th>
-            <th className="text-left text-xs text-muted font-normal px-4 py-3">Updated</th>
-            <th className="text-left text-xs text-muted font-normal px-4 py-3"></th>
+            {columns.map((col, index) => (
+              <th key={index} className={thClass}>{col}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -68,18 +67,16 @@ export default function ProductTable({ products }: ProductTableProps) {
                   </div>
                 </div>
               </td>
-              <td className="px-4 py-3 text-xs text-content-secondary">{product.productCode}</td>
-              <td className="px-4 py-3 text-xs text-content-secondary">{product.brand}</td>
-              <td className="px-4 py-3 text-xs text-content-secondary">{product.category}</td>
+              <td className={tdClass}>{product.productCode}</td>
+              <td className={tdClass}>{product.brand}</td>
+              <td className={tdClass}>{product.category}</td>
               <td className="px-4 py-3">
                 <StatusBadge status={product.status} />
               </td>
               <td className="px-4 py-3">
                 <StatusBadge status={product.readiness} />
               </td>
-              <td className="px-4 py-3 text-xs text-content-secondary">
-                {formatDate(product.updatedAt)}
-              </td>
+              <td className={tdClass}>{formatDate(product.updatedAt)}</td>
               <td className="px-4 py-3">
                 <button
                   onClick={e => {
