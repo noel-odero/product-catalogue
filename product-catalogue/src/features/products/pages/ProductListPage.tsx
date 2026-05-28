@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { ProductStatus, ReadinessStatus } from '../../../types'
 import { useProducts } from '../../../hooks'
-import LoadingSpinner from '../../../components/ui/LoadingSpinner'
-import ProductFilters from '../components/ProductFilters'
-import ProductTable from '../components/productTable'
+import { LoadingSpinner } from '../../../components/ui'
+import { ProductFilters, ProductTable } from '../components'
 
 interface Filters {
   search: string
