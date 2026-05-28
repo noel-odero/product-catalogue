@@ -44,7 +44,7 @@ export default function Button({
       {...props}
     >
       {loading && (
-        <span className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+        <span className="s-3 border border-current border-t-transparent rounded-full animate-spin" />
       )}
       {children}
     </button>
