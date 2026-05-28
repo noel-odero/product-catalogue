@@ -1,9 +1,6 @@
-import { useProducts } from '../../hooks'
-import { useAssets } from '../../hooks'
-import LoadingSpinner from '../../components/ui/LoadingSpinner'
-import DashboardStats from './components/DashboardStats'
-import RecentProducts from './components/RecentProducts'
-import RecentAssets from './components/RecentAssets'
+import { useProducts, useAssets } from '../../hooks'
+import { LoadingSpinner } from '../../components/ui'
+import { DashboardStats, RecentProducts, RecentAssets } from './components'
 
 export default function DashboardPage() {
   const { products, loading: productsLoading } = useProducts()
