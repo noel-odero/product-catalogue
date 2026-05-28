@@ -2,14 +2,11 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Product, CreateProductDTO } from '../../../types'
 import { useProducts } from '../../../hooks'
-import Input from '../../../components/ui/Input'
-import Textarea from '../../../components/ui/Textarea'
-import Select from '../../../components/ui/Select'
-import Button from '../../../components/ui/Button'
+import { Input, Textarea, Select, Button } from '../../../components/ui'
 import { cn } from '../../../lib/utils'
 
 interface ProductFormProps {
-  product?: Product
+  product?: Product //create/edit
 }
 
 interface FormFields {
