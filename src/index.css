@@ -23,6 +23,7 @@
   --color-status-ready-text: #2a7ab5;
   --color-status-rejected-bg: #1f0a0a;
   --color-status-rejected-text: #9e3a3a;
+  --color-status-rejected-bg: #1f0a0a;
 
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
