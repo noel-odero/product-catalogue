@@ -16,7 +16,7 @@ export default function ProductDetailPage() {
   const navigate = useNavigate()
   const [showUploadModal, setShowUploadModal] = useState(false)
 
-  const { products, loading: productsLoading, submitForReview, publish, archive } = useProducts()
+  const { products, loading: productsLoading } = useProducts()
   const { variants, loading: variantsLoading, createVariant, updateVariant, deleteVariant } = useVariants({ productId: id! })
   const { assets, loading: assetsLoading, uploadAsset } = useAssets({ productId: id })
   const { readiness, loading: readinessLoading } = useReadiness({ productId: id! })
@@ -90,9 +90,6 @@ export default function ProductDetailPage() {
           <ProductActions
             product={product}
             readiness={readiness}
-            onSubmitForReview={() => submitForReview(product.id)}
-            onPublish={() => publish(product.id)}
-            onArchive={() => archive(product.id)}
             onEdit={() => navigate(`/products/${product.id}/edit`)}
           />
           <ReadinessChecklist readiness={readiness} />
