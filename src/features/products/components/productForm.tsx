@@ -82,7 +82,7 @@ const validate = (fields: FormFields): FormErrors => {
 
 export default function ProductForm({ product }: ProductFormProps) {
   const navigate = useNavigate()
-  const { createProduct, updateProduct } = useProducts()
+  const { createProduct, updateProduct } = useProducts({ fetch: false })
   const isEditing = !!product
 
   const [fields, setFields] = useState<FormFields>(

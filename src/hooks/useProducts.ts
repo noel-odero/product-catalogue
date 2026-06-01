@@ -4,12 +4,17 @@ import { productService } from '../services'
 
 const PRODUCTS_KEY = ['products'] as const
 
-export function useProducts() {
+interface UseProductsOptions {
+  fetch?: boolean
+}
+
+export function useProducts({ fetch = true }: UseProductsOptions = {}) {
   const queryClient = useQueryClient()
 
   const { data: products = [], isLoading: loading, error } = useQuery({
     queryKey: PRODUCTS_KEY,
     queryFn: () => productService.find(),
+    enabled: fetch,
   })
 
   const updateCache = (updated: Product) => {

@@ -1,41 +1,24 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import type { ProductReadiness } from '../types'
 import { readinessService } from '../services'
 
-interface UseReadinessState {
-  readiness: ProductReadiness | null
-  loading: boolean
-  error: string | null
+interface UseReadinessOptions {
+  productId: string
+  fetch?: boolean
 }
 
-interface UseReadinessReturn extends UseReadinessState {
-  refetch: () => Promise<void>
-}
+export function useReadiness({ productId, fetch = true }: UseReadinessOptions) {
+  const readinessKey = ['readiness', productId] as const
 
-export const useReadiness = (productId: string): UseReadinessReturn => {
-  const [state, setState] = useState<UseReadinessState>({
-    readiness: null,
-    loading: false,
-    error: null,
+  const { data: readiness = null, isLoading: loading, error } = useQuery<ProductReadiness | null>({
+    queryKey: readinessKey,
+    queryFn: () => readinessService.findByProductId(productId),
+    enabled: fetch && !!productId,
   })
 
-  const fetchReadiness = useCallback(async (): Promise<void> => {
-    setState(prev => ({ ...prev, loading: true, error: null }))
-    try {
-      const readiness = await readinessService.findByProductId(productId)
-      setState(prev => ({ ...prev, readiness, loading: false }))
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'Failed to fetch readiness'
-      setState(prev => ({ ...prev, error: message, loading: false }))
-    }
-  }, [productId])
-
-  useEffect(() => {
-    fetchReadiness()
-  }, [fetchReadiness])
-
   return {
-    ...state,
-    refetch: fetchReadiness,
+    readiness,
+    loading,
+    error: error instanceof Error ? error.message : null,
   }
 }

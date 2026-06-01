@@ -1,76 +1,57 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { Asset, CreateAssetDTO } from '../types'
 import { assetService } from '../services'
 
-// state interface
-interface UseAssetsState {
-  assets: Asset[]
-  loading: boolean
-  error: string | null
+interface UseAssetsOptions {
+  productId?: string
+  fetch?: boolean
 }
 
-// return interface
-interface UseAssetsReturn extends UseAssetsState {
-  refetch: () => Promise<void>
-  uploadAsset: (dto: CreateAssetDTO) => Promise<Asset>
-  approveAsset: (id: string) => Promise<Asset>
-  rejectAsset: (id: string, reason: string) => Promise<Asset>
-}
+export function useAssets({ productId, fetch = true }: UseAssetsOptions = {}) {
+  const queryClient = useQueryClient()
+  const assetsKey = productId ? ['assets', productId] : ['assets']
 
-export const useAssets = (productId?: string): UseAssetsReturn => {
-  const [asset, setAsset] = useState<UseAssetsState>({
-    assets: [],
-    loading: false,
-    error: null,
+  const { data: assets = [], isLoading: loading, error } = useQuery({
+    queryKey: assetsKey,
+    queryFn: () => productId
+      ? assetService.findByProductId(productId)
+      : assetService.find(),
+    enabled: fetch,
   })
 
-  // fetch assets
-  const fetchAssets = useCallback(async (): Promise<void> => {
-    setAsset(prev => ({ ...prev, loading: true, error: null }))
-    try {
-      const assets = productId
-        ? await assetService.findByProductId(productId)
-        : await assetService.find()
-      setAsset(prev => ({ ...prev, assets, loading: false }))
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'Failed to fetch assets'
-      setAsset(prev => ({ ...prev, error: message, loading: false }))
-    }
-  }, [productId])
+  const updateCache = (updated: Asset) => {
+    queryClient.setQueryData<Asset[]>(assetsKey, prev =>
+      prev ? prev.map(a => a.id === updated.id ? updated : a) : [updated]
+    )
+  }
 
-  useEffect(() => {
-    fetchAssets()
-  }, [fetchAssets])
+  const { mutateAsync: uploadAsset } = useMutation({
+    mutationFn: (dto: CreateAssetDTO) => assetService.upload(dto),
+    onSuccess: (newAsset) => {
+      queryClient.setQueryData<Asset[]>(assetsKey, prev =>
+        prev ? [...prev, newAsset] : [newAsset]
+      )
+    },
+  })
 
-  const uploadAsset = useCallback(async (dto: CreateAssetDTO): Promise<Asset> => {
-    const newAsset = await assetService.upload(dto)
-    setAsset(prev => ({ ...prev, assets: [...prev.assets, newAsset] }))
-    return newAsset
-  }, [])
+  const { mutateAsync: approveAsset } = useMutation({
+    mutationFn: (id: string) => assetService.approve(id),
+    onSuccess: updateCache,
+  })
 
-  const approveAsset = useCallback(async (id: string): Promise<Asset> => {
-    const updated = await assetService.approve(id)
-    setAsset(prev => ({
-      ...prev,
-      assets: prev.assets.map(a => a.id === id ? updated : a),
-    }))
-    return updated
-  }, [])
-
-  const rejectAsset = useCallback(async (id: string, reason: string): Promise<Asset> => {
-    const updated = await assetService.reject(id, reason)
-    setAsset(prev => ({
-      ...prev,
-      assets: prev.assets.map(a => a.id === id ? updated : a),
-    }))
-    return updated
-  }, [])
+  const { mutateAsync: rejectAsset } = useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      assetService.reject(id, reason),
+    onSuccess: updateCache,
+  })
 
   return {
-    ...asset,
-    refetch: fetchAssets,
+    assets,
+    loading,
+    error: error instanceof Error ? error.message : null,
+    refetch: () => queryClient.invalidateQueries({ queryKey: assetsKey }),
     uploadAsset,
     approveAsset,
-    rejectAsset,
+    rejectAsset: (id: string, reason: string) => rejectAsset({ id, reason }),
   }
 }
