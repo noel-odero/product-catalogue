@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom'
+import { ErrorBoundary } from '../components/shared';
 
 
 const AppShell = lazy(() => import('../components/layout/AppShell'))
@@ -13,10 +14,14 @@ const AssetDetailPage = lazy(() => import('../features/assets/pages/AssetDetailP
 const ReviewQueuePage = lazy(() => import('../features/assets/pages/ReviewQueuePage'))
 const NotFoundPage = lazy(() => import('../features/NotFoundPage'))
 
+const withErrorBoundary = (element: React.ReactNode) => (
+  <ErrorBoundary>{element}</ErrorBoundary>
+)
+
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <AppShell />,
+    element: withErrorBoundary(<AppShell />),
     children: [
       { index: true, element: <DashboardPage /> },
       { path: 'products', element: <ProductListPage /> },
