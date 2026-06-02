@@ -1,5 +1,6 @@
 import type { AssetType, AssetStatus } from '../../../types'
 import { Input, Select } from '../../../components/ui'
+import { FilterBar } from '../../../components/shared'
 import { useProducts } from '../../../hooks'
 
 interface AssetFiltersProps {
@@ -49,53 +50,40 @@ export default function AssetFilters({
     label: p.name,
   }))
 
-  const hasActiveFilters = search || productId || assetType || status || tags
+  const hasActiveFilters = !!(search || productId || assetType || status || tags)
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-4">
-      <div className="grid grid-cols-5 gap-3">
-        <Input
-          icon="ti-search"
-          placeholder="Search by filename..."
-          value={search}
-          onChange={e => onSearchChange(e.target.value)}
-        />
-        <Select
-          placeholder="All products"
-          options={productOptions}
-          value={productId}
-          onChange={e => onProductChange(e.target.value)}
-        />
-        <Select
-          placeholder="All types"
-          options={assetTypeOptions}
-          value={assetType}
-          onChange={e => onAssetTypeChange(e.target.value as AssetType | '')}
-        />
-        <Select
-          placeholder="All statuses"
-          options={statusOptions}
-          value={status}
-          onChange={e => onStatusChange(e.target.value as AssetStatus | '')}
-        />
-        <Input
-          icon="ti-tag"
-          placeholder="Filter by tag..."
-          value={tags}
-          onChange={e => onTagsChange(e.target.value)}
-        />
-      </div>
-      {hasActiveFilters && (
-        <div className="mt-3 flex justify-end">
-          <button
-            onClick={onReset}
-            className="text-xs text-content-tertiary hover:text-content-secondary transition-colors flex items-center gap-1"
-          >
-            <i className="ti ti-x text-xs" aria-hidden="true" />
-            Clear filters
-          </button>
-        </div>
-      )}
-    </div>
+    <FilterBar hasActiveFilters={hasActiveFilters} onReset={onReset}>
+      <Input
+        icon="ti-search"
+        placeholder="Search by filename..."
+        value={search}
+        onChange={e => onSearchChange(e.target.value)}
+      />
+      <Select
+        placeholder="All products"
+        options={productOptions}
+        value={productId}
+        onChange={e => onProductChange(e.target.value)}
+      />
+      <Select
+        placeholder="All types"
+        options={assetTypeOptions}
+        value={assetType}
+        onChange={e => onAssetTypeChange(e.target.value as AssetType | '')}
+      />
+      <Select
+        placeholder="All statuses"
+        options={statusOptions}
+        value={status}
+        onChange={e => onStatusChange(e.target.value as AssetStatus | '')}
+      />
+      <Input
+        icon="ti-tag"
+        placeholder="Filter by tag..."
+        value={tags}
+        onChange={e => onTagsChange(e.target.value)}
+      />
+    </FilterBar>
   )
 }

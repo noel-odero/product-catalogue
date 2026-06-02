@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom'
+// pathname, search, hash, state, key
 
 const pageTitles: Record<string, string> = {
   '/': 'Dashboard',
