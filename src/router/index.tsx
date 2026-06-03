@@ -1,7 +1,6 @@
-import { lazy } from 'react';
-import { createBrowserRouter } from 'react-router-dom'
-import { ErrorBoundary } from '../components/shared';
-
+import { lazy } from 'react'
+import { createBrowserRouter, type RouteObject } from 'react-router-dom'
+import { ErrorBoundary } from '../components/shared'
 
 const AppShell = lazy(() => import('../components/layout/AppShell'))
 const DashboardPage = lazy(() => import('../features/dashboard/DashboardPage'))
@@ -18,23 +17,30 @@ const withErrorBoundary = (element: React.ReactNode) => (
   <ErrorBoundary>{element}</ErrorBoundary>
 )
 
+const childRoutes: RouteObject[] = [
+  { index: true, element: <DashboardPage /> },
+  { path: 'products', element: <ProductListPage /> },
+  { path: 'products/new', element: <CreateProductPage /> },
+  { path: 'products/:id', element: <ProductDetailPage /> },
+  { path: 'products/:id/edit', element: <EditProductPage /> },
+  { path: 'assets', element: <AssetLibraryPage /> },
+  { path: 'assets/:id', element: <AssetDetailPage /> },
+  { path: 'review', element: <ReviewQueuePage /> },
+]
+
+const wrappedRoutes = childRoutes.map(route => ({
+  ...route,
+  element: withErrorBoundary(route.element),
+}))
+
 export const router = createBrowserRouter([
   {
     path: '/',
     element: withErrorBoundary(<AppShell />),
-    children: [
-      { index: true, element: <DashboardPage /> },
-      { path: 'products', element: <ProductListPage /> },
-      { path: 'products/new', element: <CreateProductPage /> },
-      { path: 'products/:id', element: <ProductDetailPage /> },
-      { path: 'products/:id/edit', element: <EditProductPage /> },
-      { path: 'assets', element: <AssetLibraryPage /> },
-      { path: 'assets/:id', element: <AssetDetailPage /> },
-      { path: 'review', element: <ReviewQueuePage /> },
-    ],
+    children: wrappedRoutes,
   },
   {
-    path: "*",
-    element: <NotFoundPage/>,
-  }
+    path: '*',
+    element: <NotFoundPage />,
+  },
 ])

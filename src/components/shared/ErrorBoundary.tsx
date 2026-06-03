@@ -10,8 +10,6 @@ interface ErrorBoundaryState {
   error: Error | null
 }
 
-//an error boundary is a react component that catches rendering errors in its child tree and replaces that subtree with a fallback UI
-
 export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
