@@ -4,7 +4,12 @@ import type { Product, CreateProductDTO } from '../../../types'
 import { useProducts } from '../../../hooks'
 import { Input, Textarea, Select, Button } from '../../../components/ui'
 import { cn } from '../../../lib/utils'
-
+import {
+  brandOptions,
+  categoryOptions,
+  targetMarketOptions,
+  seasonOptions,
+} from '../../../lib/productOptions'
 interface ProductFormProps {
   product?: Product //create/edit
 }
@@ -39,34 +44,7 @@ const initialFields: FormFields = {
   season: '',
 }
 
-const brandOptions = [
-  { value: 'Heritage', label: 'Heritage' },
-  { value: 'Essentials', label: 'Essentials' },
-  { value: 'Accessories', label: 'Accessories' },
-  { value: 'Footwear', label: 'Footwear' },
-]
 
-const categoryOptions = [
-  { value: 'Outerwear', label: 'Outerwear' },
-  { value: 'Tops', label: 'Tops' },
-  { value: 'Bottoms', label: 'Bottoms' },
-  { value: 'Bags', label: 'Bags' },
-  { value: 'Shoes', label: 'Shoes' },
-]
-
-const targetMarketOptions = [
-  { value: 'Men', label: 'Men' },
-  { value: 'Women', label: 'Women' },
-  { value: 'Unisex', label: 'Unisex' },
-  { value: 'Kids', label: 'Kids' },
-]
-
-const seasonOptions = [
-  { value: 'SS24', label: 'SS24' },
-  { value: 'AW24', label: 'AW24' },
-  { value: 'SS25', label: 'SS25' },
-  { value: 'AW25', label: 'AW25' },
-]
 
 interface ValidationRule {
   field: keyof FormFields
