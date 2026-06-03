@@ -68,16 +68,29 @@ const seasonOptions = [
   { value: 'AW25', label: 'AW25' },
 ]
 
+interface ValidationRule {
+  field: keyof FormFields
+  message: string
+  trim?: boolean
+}
+
+const validationRules: ValidationRule[] = [
+  { field: 'name', message: 'Product name is required', trim: true },
+  { field: 'productCode', message: 'Product code is required', trim: true },
+  { field: 'description', message: 'Description is required', trim: true },
+  { field: 'brand', message: 'Brand is required' },
+  { field: 'category', message: 'Category is required' },
+  { field: 'targetMarket', message: 'Target market is required' },
+  { field: 'season', message: 'Season is required' },
+]
+
 const validate = (fields: FormFields): FormErrors => {
-  const errors: FormErrors = {}
-  if (!fields.name.trim()) errors.name = 'Product name is required'
-  if (!fields.productCode.trim()) errors.productCode = 'Product code is required'
-  if (!fields.description.trim()) errors.description = 'Description is required'
-  if (!fields.brand) errors.brand = 'Brand is required'
-  if (!fields.category) errors.category = 'Category is required'
-  if (!fields.targetMarket) errors.targetMarket = 'Target market is required'
-  if (!fields.season) errors.season = 'Season is required'
-  return errors
+  return validationRules.reduce<FormErrors>((errors, rule) => {
+    const value = fields[rule.field]
+    const isEmpty = rule.trim ? !value.trim() : !value
+    if (isEmpty) errors[rule.field] = rule.message
+    return errors
+  }, {})
 }
 
 export default function ProductForm({ product }: ProductFormProps) {
