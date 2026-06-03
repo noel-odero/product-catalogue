@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Variant, CreateVariantDTO, UpdateVariantDTO } from '../../../types'
-import { Input, Button } from '../../../components/ui'
+import { Input, Button, Modal } from '../../../components/ui'
 import { cn } from '../../../lib/utils'
 
 interface VariantModalProps {
@@ -93,7 +93,6 @@ export default function VariantModal({
       setErrors(validationErrors)
       return
     }
-
     setSubmitting(true)
     try {
       const dto = {
@@ -115,80 +114,68 @@ export default function VariantModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-surface border border-border rounded-xl w-full max-w-md p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-content-primary">
-            {isEditing ? 'Edit variant' : 'Add variant'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-content-tertiary hover:text-content-secondary transition-colors"
-          >
-            <i className="ti ti-x text-base" aria-hidden="true" />
-          </button>
-        </div>
-
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Variant name"
-              placeholder="e.g. Camel S"
-              value={fields.name}
-              onChange={e => handleChange('name', e.target.value)}
-              error={errors.name}
-            />
-            <Input
-              label="Variant code"
-              placeholder="e.g. MWC-001-CAM-S"
-              value={fields.variantCode}
-              onChange={e => handleChange('variantCode', e.target.value)}
-              error={errors.variantCode}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Colour"
-              placeholder="e.g. Camel"
-              value={fields.colour}
-              onChange={e => handleChange('colour', e.target.value)}
-              error={errors.colour}
-            />
-            <Input
-              label="Size"
-              placeholder="e.g. S, M, L, 32"
-              value={fields.size}
-              onChange={e => handleChange('size', e.target.value)}
-              error={errors.size}
-            />
-          </div>
-
+    <Modal
+      onClose={onClose}
+      maxWidth="max-w-md"
+      title={isEditing ? 'Edit variant' : 'Add variant'}
+    >
+      <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
           <Input
-            label="Material"
-            placeholder="e.g. Merino Wool"
-            value={fields.material}
-            onChange={e => handleChange('material', e.target.value)}
-            error={errors.material}
+            label="Variant name"
+            placeholder="e.g. Camel S"
+            value={fields.name}
+            onChange={e => handleChange('name', e.target.value)}
+            error={errors.name}
           />
-
           <Input
-            label="Barcode (optional)"
-            placeholder="e.g. 5901234123457"
-            value={fields.barcode}
-            onChange={e => handleChange('barcode', e.target.value)}
+            label="Variant code"
+            placeholder="e.g. MWC-001-CAM-S"
+            value={fields.variantCode}
+            onChange={e => handleChange('variantCode', e.target.value)}
+            error={errors.variantCode}
           />
         </div>
 
-        <div className={cn('flex items-center justify-end gap-3 pt-2 border-t border-border')}>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button loading={submitting} onClick={handleSubmit}>
-            {isEditing ? 'Save changes' : 'Add variant'}
-          </Button>
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            label="Colour"
+            placeholder="e.g. Camel"
+            value={fields.colour}
+            onChange={e => handleChange('colour', e.target.value)}
+            error={errors.colour}
+          />
+          <Input
+            label="Size"
+            placeholder="e.g. S, M, L, 32"
+            value={fields.size}
+            onChange={e => handleChange('size', e.target.value)}
+            error={errors.size}
+          />
         </div>
+
+        <Input
+          label="Material"
+          placeholder="e.g. Merino Wool"
+          value={fields.material}
+          onChange={e => handleChange('material', e.target.value)}
+          error={errors.material}
+        />
+
+        <Input
+          label="Barcode (optional)"
+          placeholder="e.g. 5901234123457"
+          value={fields.barcode}
+          onChange={e => handleChange('barcode', e.target.value)}
+        />
       </div>
-    </div>
+
+      <div className={cn('flex items-center justify-end gap-3 pt-2 border-t border-border')}>
+        <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        <Button loading={submitting} onClick={handleSubmit}>
+          {isEditing ? 'Save changes' : 'Add variant'}
+        </Button>
+      </div>
+    </Modal>
   )
 }

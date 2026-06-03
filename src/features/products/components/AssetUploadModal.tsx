@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Variant, CreateAssetDTO, AssetType } from '../../../types'
-import { Input, Select, Textarea, Button } from '../../../components/ui'
+import { Input, Select, Textarea, Button, Modal } from '../../../components/ui'
 import { cn } from '../../../lib/utils'
 
 interface AssetUploadModalProps {
@@ -24,6 +24,12 @@ interface UploadErrors {
   file?: string
 }
 
+interface ValidationRule {
+  field: keyof UploadErrors
+  message: string
+  check: (fields: UploadFields, file: File | null) => boolean
+}
+
 const initialFields: UploadFields = {
   title: '',
   description: '',
@@ -39,12 +45,29 @@ const assetTypeOptions = [
   { value: 'OTHER', label: 'Other' },
 ]
 
+const validationRules: ValidationRule[] = [
+  {
+    field: 'title',
+    message: 'Title is required',
+    check: (fields) => !fields.title.trim(),
+  },
+  {
+    field: 'assetType',
+    message: 'Asset type is required',
+    check: (fields) => !fields.assetType,
+  },
+  {
+    field: 'file',
+    message: 'Please select a file',
+    check: (_, file) => !file,
+  },
+]
+
 const validate = (fields: UploadFields, file: File | null): UploadErrors => {
-  const errors: UploadErrors = {}
-  if (!fields.title.trim()) errors.title = 'Title is required'
-  if (!fields.assetType) errors.assetType = 'Asset type is required'
-  if (!file) errors.file = 'Please select a file'
-  return errors
+  return validationRules.reduce<UploadErrors>((errors, rule) => {
+    if (rule.check(fields, file)) errors[rule.field] = rule.message
+    return errors
+  }, {})
 }
 
 export default function AssetUploadModal({
@@ -92,7 +115,6 @@ export default function AssetUploadModal({
       setErrors(validationErrors)
       return
     }
-
     setSubmitting(true)
     try {
       const dto: CreateAssetDTO = {
@@ -114,110 +136,99 @@ export default function AssetUploadModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-surface border border-border rounded-xl w-full max-w-lg p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-content-primary">Upload asset</h2>
-          <button
-            onClick={onClose}
-            className="text-content-tertiary hover:text-content-secondary transition-colors"
-          >
-            <i className="ti ti-x text-base" aria-hidden="true" />
-          </button>
-        </div>
-
-        <div
-          onDrop={handleDrop}
-          onDragOver={e => { e.preventDefault(); setDragOver(true) }}
-          onDragLeave={() => setDragOver(false)}
-          onClick={() => document.getElementById('file-input')?.click()}
-          className={cn(
-            'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors',
-            dragOver
-              ? 'border-content-secondary bg-elevated'
-              : 'border-border hover:border-content-disabled',
-          )}
-        >
-          <input
-            id="file-input"
-            type="file"
-            className="hidden"
-            onChange={e => {
-              const selected = e.target.files?.[0]
-              if (selected) handleFile(selected)
-            }}
-          />
-          {file ? (
-            <div className="flex items-center justify-center gap-2">
-              <i className="ti ti-file-check text-status-published-text text-xl" aria-hidden="true" />
-              <span className="text-sm text-content-primary">{file.name}</span>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              <i className="ti ti-upload text-2xl text-muted" aria-hidden="true" />
-              <p className="text-xs text-content-secondary">
-                Drag and drop or click to select a file
-              </p>
-              <p className="text-xs text-content-disabled">
-                Images, videos, documents supported
-              </p>
-            </div>
-          )}
-        </div>
-        {errors.file && (
-          <p className="text-xs text-status-rejected-text">{errors.file}</p>
+    <Modal onClose={onClose} maxWidth="max-w-lg" title="Upload asset">
+      <div
+        onDrop={handleDrop}
+        onDragOver={e => { e.preventDefault(); setDragOver(true) }}
+        onDragLeave={() => setDragOver(false)}
+        onClick={() => document.getElementById('file-input')?.click()}
+        className={cn(
+          'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors',
+          dragOver
+            ? 'border-content-secondary bg-elevated'
+            : 'border-border hover:border-content-disabled',
         )}
-
-        <div className="space-y-3">
-          <Input
-            label="Title"
-            placeholder="e.g. Hero shot front"
-            value={fields.title}
-            onChange={e => handleChange('title', e.target.value)}
-            error={errors.title}
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <Select
-              label="Asset type"
-              placeholder="Select type"
-              options={assetTypeOptions}
-              value={fields.assetType}
-              onChange={e => handleChange('assetType', e.target.value)}
-              error={errors.assetType}
-            />
-            <Select
-              label="Variant (optional)"
-              placeholder="Product level"
-              options={variantOptions}
-              value={fields.variantId}
-              onChange={e => handleChange('variantId', e.target.value)}
-            />
+      >
+        <input
+          id="file-input"
+          type="file"
+          className="hidden"
+          onChange={e => {
+            const selected = e.target.files?.[0]
+            if (selected) handleFile(selected)
+          }}
+        />
+        {file ? (
+          <div className="flex items-center justify-center gap-2">
+            <i className="ti ti-file-check text-status-published-text text-xl" aria-hidden="true" />
+            <span className="text-sm text-content-primary">{file.name}</span>
           </div>
-
-          <Textarea
-            label="Description (optional)"
-            placeholder="Describe this asset..."
-            rows={2}
-            value={fields.description}
-            onChange={e => handleChange('description', e.target.value)}
-          />
-
-          <Input
-            label="Tags (optional, comma separated)"
-            placeholder="e.g. hero, front, studio"
-            value={fields.tags}
-            onChange={e => handleChange('tags', e.target.value)}
-          />
-        </div>
-
-        <div className="flex items-center justify-end gap-3 pt-2 border-t border-border">
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button loading={submitting} onClick={handleSubmit}>
-            Upload asset
-          </Button>
-        </div>
+        ) : (
+          <div className="space-y-1">
+            <i className="ti ti-upload text-2xl text-muted" aria-hidden="true" />
+            <p className="text-xs text-content-secondary">
+              Drag and drop or click to select a file
+            </p>
+            <p className="text-xs text-content-disabled">
+              Images, videos, documents supported
+            </p>
+          </div>
+        )}
       </div>
-    </div>
+
+      {errors.file && (
+        <p className="text-xs text-status-rejected-text">{errors.file}</p>
+      )}
+
+      <div className="space-y-3">
+        <Input
+          label="Title"
+          placeholder="e.g. Hero shot front"
+          value={fields.title}
+          onChange={e => handleChange('title', e.target.value)}
+          error={errors.title}
+        />
+
+        <div className="grid grid-cols-2 gap-3">
+          <Select
+            label="Asset type"
+            placeholder="Select type"
+            options={assetTypeOptions}
+            value={fields.assetType}
+            onChange={e => handleChange('assetType', e.target.value)}
+            error={errors.assetType}
+          />
+          <Select
+            label="Variant (optional)"
+            placeholder="Product level"
+            options={variantOptions}
+            value={fields.variantId}
+            onChange={e => handleChange('variantId', e.target.value)}
+          />
+        </div>
+
+        <Textarea
+          label="Description (optional)"
+          placeholder="Describe this asset..."
+          rows={2}
+          value={fields.description}
+          onChange={e => handleChange('description', e.target.value)}
+        />
+
+        <Input
+          label="Tags (optional, comma separated)"
+          placeholder="e.g. hero, front, studio"
+          value={fields.tags}
+          onChange={e => handleChange('tags', e.target.value)}
+        />
+      </div>
+
+      <div className="flex items-center justify-end gap-3 pt-2 border-t border-border">
+        <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        <Button loading={submitting} onClick={handleSubmit}>
+          Upload asset
+        </Button>
+      </div>
+    </Modal>
   )
 }
