@@ -2,6 +2,7 @@ import type { AssetType, AssetStatus } from '../../../types'
 import { Input, Select } from '../../../components/ui'
 import { FilterBar } from '../../../components/shared'
 import { useProducts } from '../../../hooks'
+import { assetTypeOptions, assetStatusOptions } from '../../../lib/productOptions'
 
 interface AssetFiltersProps {
   search: string
@@ -16,19 +17,6 @@ interface AssetFiltersProps {
   onTagsChange: (value: string) => void
   onReset: () => void
 }
-
-const assetTypeOptions = [
-  { value: 'IMAGE', label: 'Image' },
-  { value: 'VIDEO', label: 'Video' },
-  { value: 'DOCUMENT', label: 'Document' },
-  { value: 'OTHER', label: 'Other' },
-]
-
-const statusOptions = [
-  { value: 'PENDING_REVIEW', label: 'Pending review' },
-  { value: 'APPROVED', label: 'Approved' },
-  { value: 'REJECTED', label: 'Rejected' },
-]
 
 export default function AssetFilters({
   search,
@@ -74,7 +62,7 @@ export default function AssetFilters({
       />
       <Select
         placeholder="All statuses"
-        options={statusOptions}
+        options={assetStatusOptions}
         value={status}
         onChange={e => onStatusChange(e.target.value as AssetStatus | '')}
       />

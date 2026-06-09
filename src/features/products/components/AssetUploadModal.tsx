@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Variant, CreateAssetDTO, AssetType } from '../../../types'
 import { Input, Select, Textarea, Button, Modal } from '../../../components/ui'
 import { cn } from '../../../lib/utils'
+import { assetTypeOptions } from '../../../lib/productOptions'
 
 interface AssetUploadModalProps {
   productId: string
@@ -37,13 +38,6 @@ const initialFields: UploadFields = {
   variantId: '',
   tags: '',
 }
-
-const assetTypeOptions = [
-  { value: 'IMAGE', label: 'Image' },
-  { value: 'VIDEO', label: 'Video' },
-  { value: 'DOCUMENT', label: 'Document' },
-  { value: 'OTHER', label: 'Other' },
-]
 
 const validationRules: ValidationRule[] = [
   {

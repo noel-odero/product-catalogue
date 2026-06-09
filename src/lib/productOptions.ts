@@ -35,6 +35,7 @@ export const seasonOptions: SelectOption[] = [
 export const statusOptions: SelectOption[] = [
   { value: 'DRAFT', label: 'Draft' },
   { value: 'IN_REVIEW', label: 'In review' },
+  { value: 'READY_TO_PUBLISH', label: 'Ready to publish' },
   { value: 'PUBLISHED', label: 'Published' },
   { value: 'ARCHIVED', label: 'Archived' },
 ]
@@ -43,4 +44,21 @@ export const readinessOptions: SelectOption[] = [
   { value: 'INCOMPLETE', label: 'Incomplete' },
   { value: 'PARTIAL', label: 'Partial' },
   { value: 'READY', label: 'Ready' },
+]
+
+export const assetTypeOptions: SelectOption[] = [
+  { value: 'MAIN_IMAGE', label: 'Main image' },
+  { value: 'VARIANT_IMAGE', label: 'Variant image' },
+  { value: 'LIFESTYLE_IMAGE', label: 'Lifestyle image' },
+  { value: 'MARKETING_BANNER', label: 'Marketing banner' },
+  { value: 'SIZE_GUIDE', label: 'Size guide' },
+  { value: 'TECHNICAL_DOCUMENT', label: 'Technical document' },
+]
+
+export const assetStatusOptions: SelectOption[] = [
+  { value: 'UPLOADED', label: 'Uploaded' },
+  { value: 'PENDING_REVIEW', label: 'Pending review' },
+  { value: 'APPROVED', label: 'Approved' },
+  { value: 'REJECTED', label: 'Rejected' },
+  { value: 'ARCHIVED', label: 'Archived' },
 ]

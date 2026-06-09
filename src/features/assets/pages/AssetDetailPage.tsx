@@ -6,12 +6,13 @@ import { StatusBadge } from '../../../components/shared'
 import { cn, formatDateTime, truncate } from '../../../lib/utils'
 
 const assetTypeIcon: Record<string, string> = {
-  IMAGE: 'ti-photo',
-  VIDEO: 'ti-video',
-  DOCUMENT: 'ti-file-description',
-  OTHER: 'ti-file',
+  MAIN_IMAGE: 'ti-photo',
+  VARIANT_IMAGE: 'ti-photo',
+  LIFESTYLE_IMAGE: 'ti-photo',
+  MARKETING_BANNER: 'ti-layout',
+  SIZE_GUIDE: 'ti-ruler',
+  TECHNICAL_DOCUMENT: 'ti-file-description',
 }
-
 export default function AssetDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -58,7 +59,9 @@ export default function AssetDetailPage() {
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-2 space-y-4">
           <div className="bg-surface border border-border rounded-lg overflow-hidden">
-            {asset.assetType === 'IMAGE' ? (
+            {asset.assetType === 'MAIN_IMAGE' ||
+            asset.assetType === 'VARIANT_IMAGE' ||
+            asset.assetType === 'LIFESTYLE_IMAGE' ? (
               <img
                 src={asset.fileUrl}
                 alt={asset.title}
