@@ -1,4 +1,9 @@
-export type ProductStatus = 'DRAFT' | 'IN_REVIEW' | 'PUBLISHED' | 'ARCHIVED'
+export type ProductStatus = 
+  | 'DRAFT' 
+  | 'IN_REVIEW' 
+  | 'READY_TO_PUBLISH'
+  | 'PUBLISHED' 
+  | 'ARCHIVED'
 
 export type ReadinessStatus = 'INCOMPLETE' | 'PARTIAL' | 'READY'
 

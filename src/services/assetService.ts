@@ -5,6 +5,14 @@ const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
 
 let assets: Asset[] = [...mockAssets]
 
+const STATUS: Record<AssetStatus, AssetStatus> = {
+  UPLOADED: 'UPLOADED',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  ARCHIVED: 'ARCHIVED',
+}
+
 export const assetService = {
   async find(): Promise<Asset[]> {
     await delay(500)
@@ -30,7 +38,8 @@ export const assetService = {
 
   async findPendingReview(): Promise<Asset[]> {
     await delay(300)
-    return assets.filter(a => a.status === ('PENDING_REVIEW' as AssetStatus))
+    const status: AssetStatus = STATUS.PENDING_REVIEW
+    return assets.filter(a => a.status === status)
   },
 
   async upload(dto: CreateAssetDTO): Promise<Asset> {
@@ -45,11 +54,11 @@ export const assetService = {
       tags: dto.tags,
       fileName: dto.file.name,
       fileUrl: URL.createObjectURL(dto.file),
-      status: 'PENDING_REVIEW',
+      status: STATUS.PENDING_REVIEW,
       uploadedAt: new Date().toISOString(),
       statusHistory: [
         {
-          status: 'PENDING_REVIEW',
+          status: STATUS.PENDING_REVIEW,
           changedAt: new Date().toISOString(),
         },
       ],
@@ -62,7 +71,7 @@ export const assetService = {
     await delay(400)
     const index = assets.findIndex(a => a.id === id)
     if (index === -1) throw new Error(`Asset with id ${id} not found`)
-    const updatedStatus: AssetStatus = 'APPROVED'
+    const updatedStatus: AssetStatus = STATUS.APPROVED
     const updated: Asset = {
       ...assets[index],
       status: updatedStatus,
@@ -82,7 +91,7 @@ export const assetService = {
     await delay(400)
     const index = assets.findIndex(a => a.id === id)
     if (index === -1) throw new Error(`Asset with id ${id} not found`)
-    const updatedStatus: AssetStatus = 'REJECTED'
+    const updatedStatus: AssetStatus = STATUS.REJECTED
     const updated: Asset = {
       ...assets[index],
       status: updatedStatus,
