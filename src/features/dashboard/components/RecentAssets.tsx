@@ -42,7 +42,9 @@ export default function RecentAssets({ assets }: RecentAssetsProps) {
             onClick={() => navigate(`/assets/${asset.id}`)}
             className="bg-surface border border-border rounded-lg p-3 cursor-pointer hover:bg-elevated transition-colors"
           >
-            {asset.assetType === 'IMAGE' ? (
+            {asset.assetType === 'MAIN_IMAGE' ||
+            asset.assetType === 'VARIANT_IMAGE' ||
+            asset.assetType === 'LIFESTYLE_IMAGE' ?(
               <img
                 src={asset.fileUrl}
                 alt={asset.title}

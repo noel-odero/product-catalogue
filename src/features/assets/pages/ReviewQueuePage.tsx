@@ -96,7 +96,9 @@ export default function ReviewQueuePage() {
                 )}
               >
                 <div className="flex items-center gap-3">
-                  {asset.assetType === 'IMAGE' ? (
+                  {asset.assetType === 'MAIN_IMAGE' ||
+                    asset.assetType === 'VARIANT_IMAGE' ||
+                    asset.assetType === 'LIFESTYLE_IMAGE' ? (
                     <img
                       src={asset.fileUrl}
                       alt={asset.title}
@@ -144,7 +146,9 @@ export default function ReviewQueuePage() {
                 </div>
 
                 <div className="p-4 space-y-4">
-                  {selectedAsset.assetType === 'IMAGE' ? (
+                  {selectedAsset.assetType === 'MAIN_IMAGE' ||
+                  selectedAsset.assetType === 'VARIANT_IMAGE' ||
+                  selectedAsset.assetType === 'LIFESTYLE_IMAGE' ? (
                     <img
                       src={selectedAsset.fileUrl}
                       alt={selectedAsset.title}
