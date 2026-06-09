@@ -1,6 +1,18 @@
-export type AssetType = 'IMAGE' | 'VIDEO' | 'DOCUMENT' | 'OTHER'
+export type AssetType = 
+  | 'MAIN_IMAGE' 
+  | 'VARIANT_IMAGE' 
+  | 'LIFESTYLE_IMAGE' 
+  | 'MARKETING_BANNER'
+  | 'SIZE_GUIDE'
+  | 'TECHNICAL_DOCUMENT'
 
-export type AssetStatus = 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED'
+export type AssetStatus = 
+  | 'UPLOADED'
+  |'PENDING_REVIEW' 
+  | 'APPROVED' 
+  | 'REJECTED'
+  | 'ARCHIVED'
+
 
 export interface Asset {
   id: string
